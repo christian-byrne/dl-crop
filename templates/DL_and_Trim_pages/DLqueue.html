@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+
+  <style>
+
+    @font-face {
+    font-family: windows;
+    src: url('../../static/fonts/windows.ttf') format("truetype");
+    }
+    
+    html {
+    background-image: url("../../static/wallpapers/5.jpg"); 
+    background-size: cover;
+    background-position: left;
+    height: 100%;
+    width: auto;
+
+    }
+    body {
+
+    background-clip: border-box;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-font-smoothing: antialiased;
+    background-color: rgba(192, 192, 192, 0.1);
+    background: transparent;
+    }
+    @media screen and (max-width: 580px) {
+      body {
+        font-size: 16px;
+        line-height: 22px;
+        
+      }
+    }
+    
+    /* ──────────────────────────────────────────────────────────────────────────────── */
+    /* ──────────────── TABLE ───────────────────────────────────────────────────────── */
+    /* ──────────────────────────────────────────────────────────────────────────────── */
+    
+    
+    .wrapper {
+    margin: 3% auto 0 auto;
+    padding: 3% 3% 0% 3%;
+    max-width: 72%;
+    min-width: 63%;
+    
+    background-color: rgba(192, 192, 192, 0.999);
+    
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.53), 0 10px 40px rgba(0, 0, 0, 0.41);
+    
+    outline-width: 1px;
+    outline-offset: -3px;
+    outline-style: solid;
+    outline-color: #000000;
+    }
+    
+    
+    .tableTitles {
+    display: table-caption;
+    margin: 0;
+    width: 100%;
+    background-color: rgba(192, 192, 192, 0.999);
+    box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.3), 0 -10px 40px rgba(0, 0, 0, 0.2);
+    
+    outline-width: 1px;
+    outline-offset: -2px;
+    outline-style: inset;
+    outline-color: #000000;
+    }
+    
+    .tableToolbar {
+    margin:2.2px;
+    background: #0000AA;
+    }
+    
+    .winBtn {
+    box-sizing: border-box;
+    
+    margin-left: 8.5px;
+    border-style: solid;
+    border-width: 6px 0;
+    border-color: #0000AA;
+    
+    background: url("../../static/toolbar/toolbar.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 15%;
+    
+    font-family: monospace;
+    text-shadow: .5px .5px rgb(29, 28, 28);
+    color: #121212;
+    font-size: 1em;
+    font-weight: 100;
+    line-height: 1.4em;
+    text-align: left;
+    text-indent: 10px;
+    }
+    
+    
+    .subIcon {
+    transform: translate(0px, .6px);
+    width: 16%;
+    line-height: unset;
+    }
+    
+    .downIcon {
+    transform: translate(0px, 1.2px);
+    width: 11%;
+    line-height: unset;
+    }
+    
+    .checkIcon {
+    transform: translate(0px, 1.6px);
+    width: 16%;
+    line-height: unset;
+    }
+    
+    .table {
+    margin: 0 0 40px 0;
+    width: 100%;
+    display: table;
+    box-sizing: border-box;
+    
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 1.5%;
+    
+    background: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)),
+              linear-gradient(rgba(192, 192, 192, 0.999), rgba(192, 192, 192, 0.999));
+              
+    outline-width: 1px;
+    outline-offset: -2px;
+    outline-style: ridge;
+    outline-color: #000000;
+    }
+    
+    @media screen and (max-width: 580px) {
+    .table {
+    display: block;
+    }
+    }
+    
+    .row {
+    display: table-row;
+    background: #f6f6f6;
+    }
+    .row:nth-of-type(odd) {
+    background: #e9e9e9;
+    }
+    .row.header {
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+            linear-gradient(rgba(64, 61, 92, 1), rgba(64, 61, 92, 1))
+              ;
+    }
+    .row.green {
+    color: rgba(255, 255, 255, 0.8);
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+            linear-gradient(rgba(184, 85, 103, 1), rgba(184, 85, 103, 1)) 
+            
+    
+              ;
+    
+    }
+    .row.blue {
+    color: rgba(255, 255, 255, 0.85);
+    background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2)),
+            linear-gradient(rgba(150, 66, 109, 1), rgba(150, 66, 109, 1))
+              ; 
+    }
+    @media screen and (max-width: 580px) {
+    .row {
+    padding: 14px 0 7px;
+    display: block;
+    }
+    .row.header {
+    padding: 0;
+    height: 6px;
+    }
+    .row.header .cell {
+    display: none;
+    }
+    .row .cell {
+    margin-bottom: 10px;
+    }
+    .row .cell:before {
+    margin-bottom: 3px;
+    content: attr(data-title);
+    min-width: 98px;
+    font-size: 10px;
+    line-height: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #969696;
+    display: block;
+    }
+    }
+    
+    .cell {
+    padding: 6px 12px;
+    display: table-cell;
+    }
+
+    .Tcell {
+      font-size: 11px;
+    }
+
+    .TCcell {
+      font-size: 13px;
+    }
+
+    .Ucell {
+      font-size: 8px;
+    }
+
+    @media screen and (max-width: 580px) {
+    .cell {
+      padding: 2px 16px;
+      display: block;
+    }
+    }
+    
+    
+    
+    
+    
+    /* ──────────────────────────────────────────────────────────────────────────────── */
+    /* ─── LAUNCH BUTTON ────────────────────────────────────────────────────────────── */
+    /* ──────────────────────────────────────────────────────────────────────────────── */
+      
+    
+    @import url("https://fonts.googleapis.com/css?family=Rubik:700&display=swap");
+    * {
+      box-sizing: border-box;
+    }
+    
+    .btnContainer {
+      position: relative;
+      left: 3%;
+      right: 97%;
+      transform: translate(3%, 0);
+
+    }
+
+
+    .launchButton {
+    display: inline-block;
+    cursor: pointer;
+    margin-top: 9%;
+    min-width: 213px;
+
+    background-color: rgb(165, 164, 164);
+    
+    border: 7px;
+    border-left-color: rgb(226, 225, 225);
+    border-top-color: rgb(226, 225, 225);
+    border-right-color: rgb(48, 47, 47);
+    border-bottom-color:  rgb(48, 47, 47);
+    border-style: ridge;
+    outline: none;
+    
+    color: #00a;
+    text-decoration: none;
+    font-family: windows;
+    line-height: 6em;
+    font-weight: 600;
+    
+    text-transform: uppercase;
+    transform-style: preserve-3d;
+    transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), background 150ms cubic-bezier(0, 0, 0.58, 1);
+    
+    }
+    
+    .launchButton::before {
+      position: absolute;
+      content: "";
+      box-sizing: border-box;
+      width: 100%;
+      height: 97%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgb(165, 164, 164);
+      box-shadow: 0 0 0 2px rgb(182, 179, 179), 0 0.625em 0 0 rgb(201, 197, 197);
+      transform: translate3d(0, 0, -1em);
+      transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+    }
+    .launchButton:hover {
+      transform: translate(0, 0.25em);
+    }
+    .launchButton:hover::before {
+      box-shadow: 0 0 0 2px #003bfc, 0 0.5em 0 0 #001aae;
+      transform: translate3d(0, 0.05em, -1em);
+      box-sizing: border-box;
+    
+    }
+    .launchButton:active {
+      transform: translate(0em, 0.5em);
+    }
+    .launchButton:active::before {
+      box-shadow: 0 0 0 2px #181718, 0 0 #000000;
+      transform: translate3d(0, 0, -1em);
+      box-sizing: border-box;
+    }
+    
+    </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<body>
+
+  <div class="btnContainer">
+    <button id="1" class="launchButton" onclick="mainButton()">
+      Get Started
+    </button>
+    <button id="2" class="launchButton" onclick="DLqueue()">
+      DL Queue [F5]
+    </button>
+    <button id="3" class="launchButton" onclick="goToPlayer()">
+      Open Video Player
+    </button>
+  </div>
+
+
+  <div class="wrapper">
+  
+    <div class="table" id="queueTable" >
+      
+      <div class="tableTitles">
+
+        <div class="tableToolbar">
+          <div  class="winBtn">
+            <img class="checkIcon" src="../../static/gtk3/radio-mixed@2.png">
+            queue 
+          </div> 
+        </div>
+        
+      </div>
+
+      <div class="row header">
+        <div class="cell">
+          Title
+        </div>
+        <div class="cell">
+          Start Time
+        </div>
+        <div class="cell">
+          End Time
+        </div>
+        <div class="cell">
+          URL
+        </div>
+      </div>
+      
+      {% for row_index in range(usrSelection['url']|count) %}
+      <div class="row">
+        <div class="cell Tcell">{{ usrSelection['title'][row_index]|tojson|safe }}</div>
+        <div class="cell TCcell">{{ usrSelection['start'][row_index] }}</div>
+        <div class="cell TCcell">{{ usrSelection['end'][row_index] }}</div>
+        <div class="cell Ucell">{{ usrSelection['url'][row_index]|tojson|safe }}</div>
+      </div>
+      {% endfor %}
+      
+      
+    </div>
+    
+    <div class="table" id="doneTable">
+      
+      <div class="tableTitles">
+
+        <div class="tableToolbar">
+          <div class="winBtn" style="text-indent: 13px;">
+            <img class="downIcon" src="../../static/gtk3/arrow.png">
+            done 
+          </div> 
+        </div>
+        
+      </div>
+
+      <div class="row header green">
+        <div class="cell">
+          Title
+        </div>
+        <div class="cell">
+          From-To
+        </div>
+        <div class="cell">
+          URL
+        </div>
+        <div class="cell">
+          Finished
+        </div>
+        <div class="cell">
+          Open
+        </div>
+      </div>
+
+      {% for row_index in range(usrHistory['url']|count) %}
+      <div class="row">
+        <div class="cell Tcell">{{ usrHistory['title'][row_index]|tojson|safe }}</div>
+        <div class="cell TCcell">{{ usrHistory['clip'][row_index] }}</div>
+        <div class="cell Ucell">{{ usrHistory['url'][row_index]|tojson|safe }}</div>
+        <div class="cell TCcell">&#9745;</div>
+        <div class="cell">
+          <button class="openBtn" onclick="openVid(this.firstChild.innerHTML)"> 
+            Click to Open 
+            <div class="hidden1"> {{ usrHistory['stored'][row_index]|tojson|safe }} </div>
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+     
+    </div>
+    
+    <div class="table" id="savedTable">
+      
+      <div class="tableTitles">
+
+        <div class="tableToolbar">
+          <div class="winBtn">
+            <img class="subIcon" src="../../static/icons/menu.png">
+            saved 
+          </div> 
+        </div>
+        
+      </div>
+
+      <div class="row header blue">
+        <div class="cell">
+          Title
+        </div>
+        <div class="cell">
+          URL
+        </div>
+        <div class="cell">
+          Start
+        </div>
+        <div class="cell">
+          End
+        </div>
+        <div class="cell">
+          Remove
+        </div>
+      </div>
+      
+            
+      {% for row_index in range(savedLater['url']|count) %}
+      <div class="row">
+        <div class="cell Tcell">{{ savedLater['title'][row_index]|tojson|safe }}</div>
+        <div class="cell TCcell">{{ savedLater['start'][row_index] }}</div>
+        <div class="cell TCcell">{{ savedLater['end'][row_index] }}</div>
+        <div class="cell Ucell">{{ savedLater['url'][row_index]|tojson|safe }}</div>
+        <div class="cell">
+          <button class="popSaveBtn" onclick="popThis(this.firstParent)"> 
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+
+
+    </div>
+    
+  </div>
+
+<script>
+
+  var xhttp = new XMLHttpRequest();
+
+  function mainButton() {
+    btnTxt = document.getElementById("1").innerHTML
+    indic = ["Get Started", "Record Start Time [1]", "Record End Time [1]"]
+    if ( btnTxt.includes(indic[0]) == false ) {
+      if ( btnTxt.includes(indic[1]) ) {
+        $.ajax({
+            url : "/recordS",
+            success: function(data) {
+              $('#queueTable').append('<div class="row"><div class="cell Tcell">' + data["title"] + '</div><div class="cell TCcell" id="s' + data["iterator"].toString() + '">' + data["start"] + '</div><div class="cell TCcell" id="e' + data["iterator"].toString() + '">. . .</div><div class="cell Ucell">' + data["url"] + '</div></div>');
+            }
+        });
+      document.getElementById("1").innerHTML = indic[2]
+      }
+      else {
+        $.ajax({
+            url : "/recordE",
+            success: function(data) {
+              $(data["divEnd"]).html(data["end"])
+              $(data["divStart"]).html(data["start"])
+            }
+        });
+        document.getElementById("1").innerHTML = indic[1]
+      } 
+    }
+    else {
+      $.ajax({
+            url : "/launchS",
+            success: function(data) {
+              
+            }
+        });
+        document.getElementById("1").innerHTML = indic[1]
+    }
+  }
+
+
+  function goToPlayer() {
+    curr = window.location.href + "player"
+    window.location.replace(curr)
+    /*
+    xhttp.open("GET", req, true);
+    xhttp.send();
+    */
+  }
+
+
+  function openVid(location) {
+    document.documentElement.style.backgroundImage = location
+    $.ajax({
+      // add location parameter to the URL get request parameter so python can open it
+      // Additionally, make js use the file location to open on front end
+            url : "/openVid",
+            success: function(data) {
+
+            }
+        });
+  }
+
+  function popSaveBtn(record) {
+    $.ajax({
+      // add location parameter to the URL get request parameter so can update dic in python
+            url : "/popThis",
+            success: function(data) {
+
+            }
+        });
+  }
+
+</script>
+</body>

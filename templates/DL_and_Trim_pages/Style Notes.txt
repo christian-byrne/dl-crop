@@ -1,0 +1,9 @@
+/* 
+* https://coolors.co/27568c-96426d-cfc891-b85567-403d5c 
+* [27568C : bdazzled blue, 96426D : magenta haze, CFC891 : sage, B85567 : popstar, 403D5C : independence] 
+* https://material.io/resources/color/#!/?view.left=1&view.right=1&primary.color=403D5C&secondary.color=27568C
+*/
+
+
+/* background-image: [1-9].jpg */
+

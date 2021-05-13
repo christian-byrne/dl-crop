@@ -1,0 +1,50 @@
+/home/bymyself/_BYMYself
+chrome
+['chromedriver', 'firefoxdriver', 'edgedriver']
+['90.0.4430.24', '87.0.4280.88', '88.0.4324.96', '89.0.4389.23']
+['/home/bymyself/_BYMYself/webdrivers/chrome/87.0.4280.88/chromedriver', '/home/bymyself/_BYMYself/webdrivers/chrome/88.0.4324.96/chromedriver', '/home/bymyself/_BYMYself/webdrivers/chrome/89.0.4389.23/chromedriver']
+linux
+['/home/bymyself/_BYMYself/chrome_extensions/ublock.crx', '/home/bymyself/_BYMYself/chrome_extensions/auto_https.crx', '/home/bymyself/_BYMYself/chrome_extensions/privacy_badger.crx', '/home/bymyself/_BYMYself/chrome_extensions/ublock.crx', '/home/bymyself/_BYMYself/chrome_extensions/auto_https.crx', '/home/bymyself/_BYMYself/chrome_extensions/privacy_badger.crx']
+['/home/bymyself/_BYMYself/chrome_extensions/torrent.crx', '/home/bymyself/_BYMYself/chrome_extensions/canvas_blocker.crx', '/home/bymyself/_BYMYself/chrome_extensions/session_buddy.crx', '/home/bymyself/_BYMYself/chrome_extensions/geo_bypass.crx', '/home/bymyself/_BYMYself/chrome_extensions/URL_cleaner.crx', '/home/bymyself/_BYMYself/chrome_extensions/remove_tracking_URLS.crx', '/home/bymyself/_BYMYself/chrome_extensions/archive.crx', '/home/bymyself/_BYMYself/chrome_extensions/age_restriction.crx', '/home/bymyself/_BYMYself/chrome_extensions/torrent.crx', '/home/bymyself/_BYMYself/chrome_extensions/canvas_blocker.crx', '/home/bymyself/_BYMYself/chrome_extensions/session_buddy.crx', '/home/bymyself/_BYMYself/chrome_extensions/geo_bypass.crx', '/home/bymyself/_BYMYself/chrome_extensions/URL_cleaner.crx', '/home/bymyself/_BYMYself/chrome_extensions/remove_tracking_URLS.crx', '/home/bymyself/_BYMYself/chrome_extensions/archive.crx', '/home/bymyself/_BYMYself/chrome_extensions/age_restriction.crx']
+None
+
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=DGaSgGhY-KU
+https://www.youtube.com/watch?v=kDBL79fWJEk
+https://www.youtube.com/watch?v=AjIVH7xWtUA
+https://www.youtube.com/watch?v=AjIVH7xWtUA
+https://www.youtube.com/watch?v=AjIVH7xWtUA
+https://www.youtube.com/watch?v=AjIVH7xWtUA
+https://www.youtube.com/watch?v=aSWEHfBsSSg
+https://www.youtube.com/watch?v=eemc6gzWzO4
+https://www.youtube.com/watch?v=eemc6gzWzO4
+https://www.youtube.com/watch?v=iS2XPes9t8s
+https://www.youtube.com/watch?v=iS2XPes9t8s
+https://www.youtube.com/watch?v=iS2XPes9t8s
+https://www.youtube.com/watch?v=iS2XPes9t8s
+https://www.youtube.com/watch?v=iS2XPes9t8s
