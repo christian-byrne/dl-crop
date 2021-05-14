@@ -1,29 +1,67 @@
-
-# ────────────────────────────────────────────────────────────────────────────────
-# ─── SOURCES ────────────────────────────────────────────────────────────────────
-# ────────────────────────────────────────────────────────────────────────────────
-
-### Flask Docs:       https://flask.palletsprojects.com/en/1.1.x/api/
-### Selenium Methods: https://www.selenium.dev/selenium/docs/api/py/webdriver_remote/selenium.webdriver.remote.webelement.html
-###                   https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html
-
-from flask import Flask, request, send_from_directory, render_template, jsonify
-import os, webbrowser, glob, sys
+import os, webbrowser, glob, sys, json, pickle
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-import indexer
-import json
-from indexer import create_dirs
+from flask import Flask, request, send_from_directory, render_template, jsonify
+from directory_indexer import create_dirs
+from ytdl_cropped import dl_crop
 
-#app = Flask('_BYMYself')
 app = Flask(__name__.split('.')[0])
 
-# DEVMODE - SELENIUM TESTING
-#dp = "/home/bymyself/Desktop/trim_wrapper/webdrivers/chrome/88.0.4324.96/chromedriver"
-#os.chmod(dp, 755)
-#driver = webdriver.Chrome(executable_path=dp)
-#driver.get("https://www.youtube.com/watch?v=2tGlaSFyZPw")
+verbose = True
+
+
+#
+# ───────────────────────────────────────────────── USING PERSISTENT OBJECTS ─────
+#
+
+
+def save_obj(obj, name):
+    """
+    Saves an object to a file for persistent use between
+    program instances. 
+    
+    Params:
+        obj     : the object to save
+        name    : the name of the file to write to/create
+    """
+
+    with open('obj/'+ name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_obj(name):
+    """
+    Returns an object that was previously saved with the
+    save_obj() function. 
+    
+    This Program's Stored Objects:
+        order       : the dictionary of orders and floor/ceiling prices
+        cashed_out  : the IDs of cashed out orders
+
+    Params:
+        name    : the name of the object/file that was stored previously
+    """
+
+    with open('obj/' + name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+
+try:
+    usr_spec = load_obj("usr_spec")
+except:
+    usr_spec = {
+        "app_path": os.getcwd(),
+        "default_browser": "chrome",
+        "driver_names": ["chromedriver","firefoxdriver","edgedriver"],
+        "versions": [],
+        "try_files": [],
+        "os": sys.platform,
+        "on_extensions": [],
+        "off_extensions": [],
+        "saved_session": []
+    }
+    save_obj(usr_spec, "usr_spec")
 
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -31,24 +69,17 @@ app = Flask(__name__.split('.')[0])
 # ────────────────────────────────────────────────────────────────────────────────
 
 
-usr_spec = {
-    "app_path": os.getcwd(),
-    "default_browser": "chrome",
-    "driver_names": ["chromedriver","firefoxdriver","edgedriver"],
-    "versions": [],
-    "try_files": [],
-    "os": sys.platform,
-    "on_extensions": [],
-    "off_extensions": [],
-    "saved_session": None }
-
-
 def get_version_files():
-    usr_spec["versions"] = os.listdir(usr_spec["app_path"] + "/webdrivers/" +\
-        usr_spec["default_browser"])
+    """ Append appropriate webdriver versions to 'try_files' property of usr_spec
+    """
+    
+    usr_spec["versions"] = os.listdir(
+        usr_spec["app_path"] + \
+            "/webdrivers/" + \
+                usr_spec["default_browser"]
+    )
 
     for version in usr_spec["versions"]:
-        # Get driver files for each version
         cd = usr_spec["app_path"] + "/webdrivers/" +\
         usr_spec["default_browser"] + "/" + str(version)
 
@@ -71,6 +102,14 @@ def get_version_files():
 
 
 def check_zip(fpath):
+    """ Check if a zipped file exists in highest level of fpath.
+        If one exists, unzip it and return the path to the unizpped version.
+        Else, return the original arg. 
+
+        Params:
+            fpath : (str) path to check highest level directory of  
+    """
+
     if ".zip" in fpath:
         cd = os.path.dirname(fpath)
         import zipfile
@@ -83,6 +122,15 @@ def check_zip(fpath):
 
 
 def try_driver(driver_path, browser):
+    """ Find the correct, unzipped webdriver files in driver_path.
+        Create options objects then initialize webdriver and re-define
+        as 'driver' global variable
+
+        Params:
+            driver_path: (str) path to directory where webdrivers are contained
+            browser : (str) the user's browser software
+    """
+
     global driver
 
     # Set permissions for relative driver path
@@ -93,8 +141,6 @@ def try_driver(driver_path, browser):
         # TODO pass browser choice to init_options
         o = init_options()
         driver = webdriver.Chrome(executable_path=driver_path, chrome_options=o)
-
-    # TODO other browsers
 
 
 def txt_val(text):
@@ -137,98 +183,73 @@ def init_options():
 
 
 def launch_selenium():
-    global driver
-    global usr_spec
+    """ Use 'versions' and 'try_files' from get_version_files() call to attempt
+        Selenium startup. Go to previous site or default site. Update usr_spec obj.
+        Void """
+    
+    global driver; global usr_spec
 
-    # if there is alredy a selenium instance running
+    # If there is alredy a selenium instance running
     try:
         if driver.title:
             return None
     except:
         pass 
 
-    try:
-        cookies = open("cookies.txt", "r")
-        lines = cookies.readlines()
-    except:
-        cookies = open("cookies.txt" "w")
-        lines = []
-    last_site = []
-
-    # Check if a previous user with stored data
-    if len(lines) > 4:
-        for index, _ in enumerate(usr_spec.keys()):
-            # Store arrays from saved user specs
-            if type(usr_spec[_]) == list:
-                for item in lines[index].split(","):
-                    usr_spec[_].append(txt_val(item))
-            # Store strings from saved user specs
-            else:
-                usr_spec[_] = txt_val(lines[index])
-        for _ in range(5,len(lines)):
-            if "https://www." in lines[_]:
-                last_site.append(txt_val(lines[_]))
-        for index, p in enumerate(usr_spec["try_files"]):
-            try:
-                print("TRIED DRIVER PATH FROM USR STORAGE (cookies.txt):  " + p)
-                try_driver(p, "chrome")
-                break
-            except:
-                if index == len(usr_spec["try_files"]) - 1:   # If none work
-                    # Clear cookies, make new blank, reset usr_spec dictionary, restart
-                    cookies.close(); os.remove("cookies.txt")
-                    cookies = open("cookies.txt", "w"); cookies.close()
-                    usr_spec = {"app_path":os.getcwd(),"default_browser":"chrome",
-                    "driver_names": ["chromedriver","firefoxdriver","edgedriver"],
-                    "versions":[],"try_files":[],"os":sys.platform,"saved_session":None}
-                    return launch_selenium()
-                else:
-                    pass
-        # Remove try_files elements that didn't work so user skips them next time
-        for _ in range(0, index):
-            usr_spec["try_files"].pop(_)
-        
-    # First time user
-    else:
+    # First time user -> Init versions
+    if not usr_spec["versions"]:
         get_version_files()
-        for index, p in enumerate(usr_spec["try_files"]):
-            try:
-                try_driver(p, "chrome")
-                break
-            except:
-                pass
-        # Remove try_files elements that didn't work so user skips them next time
-        for _ in range(0, index):
-            usr_spec["try_files"].pop(_)
-        # Create user data cookies file
-        cookies.close()
-        os.remove("cookies.txt")
-        cookies = open("cookies.txt", "w")
-        for _ in usr_spec.keys():
-            cookies.write(str(usr_spec[_]) + "\n")
 
         # ___DEVMODE___
-        print("\n\n\n\nNEW USER SPECS SAVED:\n")
-        for key in usr_spec.keys():
-            print(str(key) + " User Spec:")
-            print(usr_spec[key])
-        print("\n\n\n\n")
+        if verbose:
+            print("\n\n\n\nNEW USER SPECS SAVED:\n")
+            for key in usr_spec.keys():
+                print(
+                    str(key),
+                    "User Spec:",
+                    usr_spec[key]
+                )
 
-    if not last_site:
+    for index, p in enumerate(usr_spec["try_files"]):
+        try:
+            try_driver(p, "chrome")
+            break
+        except:
+            if index == len(usr_spec["try_files"]) - 1:   # If none work
+                refresh = {
+                    "app_path":os.getcwd(),
+                    "default_browser":"chrome",
+                    "versions":[],
+                    "try_files":[],
+                    "os":sys.platform
+                }
+                usr_spec.update(refresh)
+                return launch_selenium()
+            else: pass
+
+    # Remove try_files elements that didn't work so user skips them next time
+    for _ in range(0, index):
+        usr_spec["try_files"].pop(_)
+        
+    # Open previous site from last session OR default site
+    if not usr_spec["saved_session"]:
         driver.get("https://www.youtube.com")
     else:
-        last_site.reverse()
-        for index, site in enumerate(last_site):
-            print("[ATTEMPT " + str(index+1) + "] Loading Site from Last Session:\n" + str(site))
+        i = len(usr_spec["saved_session"]) - 1
+        while i >= 0:
             try:
-                driver.get(site)
+                driver.get(usr_spec["saved_session"][i])
                 break
             except:
-                if index == len(last_site) - 1 or index > 15:
-                    print("Loading Default Site")
+                if i == 0:
                     driver.get("https://www.youtube.com")
-    
-    cookies.close()
+                    break
+                else:
+                    i -= 1
+                    continue
+
+    # Update usr_spec persistent object
+    save_obj(usr_spec, "usr_spec")
 
 
 # ────────────────────────────────────────────────────────────────────────────────
@@ -398,13 +419,17 @@ def end_code():
             VideoNodes["end"].append(False)
     driver.switch_to_default_content()
     cookies = open("cookies.txt", "a")
-    cookies.write("\n" + str(VideoNodes["url"][0]))
+    usr_spec["saved_session"].append( str(VideoNodes["url"][0])) )
     cookies.close()
 
     # ___DEVMODE___
-    for key in VideoNodes.keys():
-        print(str(key) + " Array:")
-        print(VideoNodes[key])
+    if verbose:
+        for key in VideoNodes.keys():
+            print(
+                str(key),
+                "Array:",
+                VideoNodes[key]
+            )
 
     # Get index of validated video node
     correct = correct_vid_index()
@@ -418,10 +443,16 @@ def end_code():
     reset_video_nodes()
 
     # ___DEVMODE___
-    print("\nUSER SELECTION LIST:\n")
-    print(usrSelection["url"])
-    print(usrSelection["start"])
-    print(usrSelection["end"])
+    if verbose:
+        print(
+            "\nUSER SELECTION LIST:\n",
+            "URL:",
+            usrSelection["url"],
+            "START TIME:",
+            usrSelection["start"],
+            "END TIME:",
+            usrSelection["end"]
+        )
 
 
 def find_video_nodes():
@@ -446,64 +477,34 @@ def find_video_nodes():
     return vid_list
 
 
-def find_page_title():
-    #candidates = []
-    #tags = ["title", "head", "metaname", "Title"]
-    #for _ in tags:
-    #    try:
-    #        candidates.append(driver.#find_elements_by_tag_name(_))
-    #    except:
-    #        continue
-    #i = 0
-    #ret = False
-    #while not ret and i < len(candidates) - 1:
-    #    try:
-    #        ret = str(candidates[i].get_attribute#('innerHTML')).replace("<","").replace(">","").#strip()
-    #    except:
-    #        i += 1
-    #        continue
-    #
-    #if not ret:
-    #    ret = "Can't Parse Title"
-    return driver.title
-    
-
 def start_code(iframeN, cURL):
-    VideoNodes["vidTitle"].append(find_page_title())
-    print(VideoNodes["vidTitle"])
+    VideoNodes["vidTitle"].append(driver.title)
 
     for vid in find_video_nodes():
         VideoNodes["node"].append(vid)
         VideoNodes["url"].append(cURL)
         VideoNodes["iframe"].append(iframeN)
-        try:
-            VideoNodes["start"].append(vid.get_attribute("currentTime"))
-        except:
-            VideoNodes["start"].append(False)
-        try:    
-            VideoNodes["width"].append(vid.get_attribute("videoWidth"))
-        except:    
-            VideoNodes["width"].append(False)
-        try:   
-            VideoNodes["height"].append(vid.get_attribute("videoHeight"))
-        except:   
-            VideoNodes["height"].append(False)
+        try: VideoNodes["start"].append(vid.get_attribute("currentTime"))
+        except: VideoNodes["start"].append(False)
+        try: VideoNodes["width"].append(vid.get_attribute("videoWidth"))
+        except: VideoNodes["width"].append(False)
+        try: VideoNodes["height"].append(vid.get_attribute("videoHeight"))
+        except: VideoNodes["height"].append(False)
         try:
             # if muted returns true(js), append False for easier checking later on
             _ = not vid.get_attribute("muted")
             VideoNodes["muted"].append(_)
-        except:    
-            VideoNodes["muted"].append(False)
+        except: VideoNodes["muted"].append(False)
 
 
 def by_frame():
-    u = driver.current_url
+    url = driver.current_url
 
     # Update usr saved session cookie for next app use
-    usr_spec["saved_session"] = u
+    usr_spec["saved_session"].append(url)
 
     # Top Frame (no iframe)
-    start_code("no", u)
+    start_code("no", url)
 
     # FINDING IFRAMES:
     ifl = driver.find_elements_by_tag_name('iframe')
@@ -511,14 +512,15 @@ def by_frame():
         try:
             driver.switch_to_default_content()
             driver.switch_to.frame(iframe)
-            start_code(index, u)
+            start_code(index, url)
         except:
             continue
 
     # ___DEVMODE___
-    print("\n\n\n\nPARSED VIDEO NODES:\n")
-    print(VideoNodes)
-    print("\n\n\n")
+    if verbose:
+        print("\n\n\n\nPARSED VIDEO NODES:\n")
+        print(VideoNodes)
+        print("\n\n\n")
 
 
 
@@ -528,16 +530,20 @@ def by_frame():
 # ─── FLASK ROUTERS ──────────────────────────────────────────────────────────────
 # ────────────────────────────────────────────────────────────────────────────────
 
-# https://flask.palletsprojects.com/en/1.1.x/api/
 
 @app.route('/')
 def hello():
-    return render_template("DL_and_Trim_pages/DLqueue.html", usrSelection=usrSelection, usrHistory=usrHistory, savedLater=savedLater)
+    return render_template("dl-queue.html", usrSelection=usrSelection, usrHistory=usrHistory, savedLater=savedLater)
 
 
 @app.route('/launchS')
 def launchS():
     launch_selenium()
+    
+
+@app.route('/startdl')
+def dl_from_queue():
+    dl_crop(from_webapp=usrSelection)
     
 
 @app.route('/recordS')
@@ -566,23 +572,24 @@ def recordE():
 @app.route('/openVid')
 def ov():
     by_frame()
-    return jsonify({
-        "iterator": len(usrSelection["end"]),
-        "title": VideoNodes["vidTitle"][0],
-        "url": VideoNodes["url"][0],
-        "start": VideoNodes["start"][0][:-2],
-        #TODO add a validation function that validates start times only so the wrong start time is not passed to front end   
-    })
+    return jsonify(
+        {
+            "iterator": len(usrSelection["end"]),
+            "title": VideoNodes["vidTitle"][0],
+            "url": VideoNodes["url"][0],
+            "start": VideoNodes["start"][0][:-2],
+            #TODO add a validation function that validates start times only so the wrong start time is not passed to front end
+        }
+    )
 
 
 @app.route('/player')
 def pl():
     # TODO if user cookies indicate it's a new direcotry, run the check for quotes / apostrophes in file names
     # TODO way to quickly check if new thumbnails ar eneeded
-    dirs = json.dumps(create_dirs("static/userLibrary/Plumber_Clips"))
-    return render_template("Player/BymyselfPlayer.html", directories=dirs)
+    dirs = json.dumps(create_dirs("static/userLibrary"))
+    return render_template("playlist-player.html", directories=dirs)
 
 
 if __name__ == '__main__':
-    #os.chdir("/home/bymyself/_BYMYself/bmp")
     app.run(debug=False)
