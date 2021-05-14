@@ -1,0 +1,451 @@
+<doctype! HTML>
+  <head>
+    <title> SIMPLE VID PLAYER </title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+  </head>
+
+  <style>
+
+    @font-face {
+      font-family: 'anime_subs_bold';
+      src: url('../Desktop/WebDev/fonts/anime_subtitles/AlteHaasGroteskBold.ttf') format('truetype');
+    }
+
+    @font-face {
+      font-family: 'anime_subs';
+      src: url('../Desktop/WebDev/fonts/anime_subtitles/AlteHaasGroteskRegular.ttf') format('truetype');
+    }
+
+    body {
+      background-color: black;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .nxtBtn {
+      position: absolute;
+      top: 10px;
+      left: 3px;
+      z-index: 100;
+      height: 25px;
+      width: 100px;
+      align-items: flex-start;
+      display: flex;
+      font-family: monospace;
+      text-align: center;
+      font-size: 13px;
+      opacity: .5;
+      color:seashell;
+      background: transparent;
+      /* Buffer Room so hover is slightly easier to find with mouse */
+      padding: 0 45px 45px 0;
+    }
+      .nxtBtn:hover {
+        opacity: 1;
+        background-color: transparent;
+        color: #121212;
+        flex-grow: 4;
+        width:60%;
+        height: 7%;
+        align-items: stretch;
+        font-family: anime_subs_bold;
+        font-size: 14px;
+        /* Buffer Room so you don't accidentally collapse when just barely oustide of box with mouse */
+        padding: 0 30px 50px 0;
+      }
+        .nxtBtn::-ms-value{
+          font-family: anime_subs;
+        }
+
+    .inputBtn {
+      width: 100px;
+      font-family: inherit;
+      color: inherit;
+      background-color: inherit;
+      flex-grow: inherit;
+      font-size: inherit;
+    }
+    .submitBtn {
+      background-color: inherit;
+      color: inherit;
+      font-family: inherit;
+      font-size: inherit;
+      flex-grow: 1;
+    }
+      .inputBtn:hover,
+      .submitBtn:hover {
+        background-color: rgb(178, 254, 247);
+        outline: rgba(128, 203, 196, .45) inset 1px;
+      }
+
+    .shorter {
+      width: 30px;
+    }
+/* --------------------------------- */
+
+    .bgPlayer {
+      height: 100%;
+      width: auto;
+      ;
+    }
+
+    .bgPlayer video {
+      height: 100%;
+      width: 100%
+    }
+
+/* --------------------------------- */
+
+    .displayStats {
+      position: absolute;
+      z-index: 99;
+      right: 10px;
+      top: 0px;
+      opacity: .85;
+      text-align: right;
+	    font: normal small-caps bold 2em anime_subs_bold;
+
+	  /* Text Outline Effect */
+      -webkit-text-fill-color: rgba(253, 253, 253,.9);
+      -webkit-text-stroke-width: 1.5px;
+      -webkit-text-stroke-color: #121212;
+    }
+
+    .displayStats:hover {
+      opacity: 1;
+      -webkit-text-stroke-width: 1.6px;
+      -webkit-text-stroke-color: black;
+      -webkit-text-fill-color: white;
+      font-size: 3em;
+    }
+
+    p { margin: 5px}
+  </style>
+  <body onload="initialize()">
+
+
+    <!-- Input Buttons -->
+    <div class="nxtBtn">
+      <input type="text" class="inputBtn" value="../OneDrive/School/UA/MATH125/4_Using_The_Derivative_P2/1 (1).mp4" id="1z" name="sourceVideo">
+      <input type="submit" class="submitBtn shorter" value="Update Path"  onclick="changOG()">
+      <input type="text" class="submitBtn shorter" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter #" id="1a" name="sourceVideo">
+      <input type="submit" class="submitBtn shorter" value="Skip to Video #"  onclick="skipTo()">
+    </form>
+    </div>
+
+    <!-- Display Stats -->
+    <div class="displayStats">
+      <p id="folderTitle"> 4_Using_The_Derivative_P2 </p>
+      <p id="videoTitle"> 1 (1).mp4 </p>
+      <p id="iterator"> Vid 1 </p>
+    </div>
+
+    <!-- Video Background: Main  -->
+    <div class="bgPlayer">
+      <video controls loop src="../OneDrive/School/UA/MATH125/5_Definite_Integral/1 (1).mp4" onclick="invertP()">
+      </video>
+    </div>
+
+
+  <script>
+    var iter;
+    var startVid = "../OneDrive/School/UA/MATH125/5_Definite_Integral/1 (1).mp4"
+    videoList = [document.getElementsByTagName("video")[0]]
+    selectedVid = 0
+    toggle = "off";
+    var videoHistory = [];
+    var iterHistory = [1]
+
+    fileNames =
+    {
+      "5_Definite_Integral":
+          {'1': 'Velocity, displacement, position, and area', '10': 'Estimations for non-monotone functions', '11': 'Finding exact values of definite integrals-3 examples', '12': 'Interpreting a velocity graph', '13': 'Interpretations of the definite integral and examples', '14': 'The fundamental theorem of calculus', '15': 'Setting up definite integrals-examples', '16': 'Properties of integrals by example', '17': 'Finding endpoints for horizontal transformations', '18': 'Examples with  a function that is not always positive', '19': 'Using the average value formula-example', '2': 'Rocket problem-under and over estimates', '3': 'Rocket problem-notation and terminology', '4': 'Specifying the difference in the estimates', '5': 'What happens when velocity is negative', '6': 'Practical interpretation-with negative velocity', '7': 'Finding an overestimate using an equation of a function', '8': 'The definite integral notation', '9': 'Working with signed areas and displacement'},
+
+      "6_Constructing_Antiderivatives":
+          {'1': 'Using the FTC to find values for F', '10': 'Using the FTC to find the area between two functions', '11': 'Solving differential equations-2 examples', '12': 'Finding v(t) and s(t) from a(t) using differential equations', '13': 'Length of runway example', '14': 'Antiderivatives in integral form', '15': 'Derivatives of an antiderivative in integral form', '16': 'Using an antiderivative in integral form with a graph', '17': "Chain rule 'backwards'", '18': 'How to properly perform the method of substitution', '19': 'Changing endpoints for a u sub in a definite integral', '2': 'Using the FTC to sketch an exact graph of F(x)', '20': 'Using a trig identity with u sub', '21': 'Symbolic definite integral with u sub-example 1', '22': 'More symbolic examples', '3': 'Another example using a numerical integration tool and the FTC', '4': 'Antiderivatives and indefinite integrals', '5': 'The constant and power rules for antiderivatives', '6': 'Sums differences and constant multiples', '7': 'More examples finding antiderivatives', '8': 'Using the FTC', '9': 'Setting up definite integrals-2 examples'}
+    }
+
+
+    function initialize() {
+      videoHistory.push(startVid);
+      displayStats();
+    }
+
+
+    // Nullify the play/pause onclick function that is enabled when you show the 'controls' element of a video node
+    function invertP() {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if (i.paused == true) { i.play(); }
+          else { i.pause(); }
+        }; };
+    }
+
+    function displayStats() {
+      haveFileNames = false
+      z = startVid.split("/")
+      // Re-set folder name
+      folder = z[z.length - 2]
+      document.getElementById("folderTitle").innerHTML = folder
+      // If the file names for this folder are in the filenames object
+      if ( Object.keys(fileNames).includes(folder) ) {
+          haveFileNames = true
+      }
+
+      // Re-set file name if don't have file name on file
+      a = z[z.length - 1]
+      if ( !haveFileNames ) {
+        if ( a.includes(".")==true ) {
+        tmp = a.split(".")
+        tmp.pop()
+        tmp2 = tmp.join(".")
+        tmp2 = tmp2.replace("%20", " ").replace(/^\s+|\s+$/g, '')
+        document.getElementById("videoTitle").innerHTML = tmp2
+        }
+      }
+
+      // Re-set Iter display #
+      p = getIterPos(a)
+      i = getCurrentIter(a, p)
+      document.getElementById("iterator").innerHTML = i.toString()
+      // Re-set file name from dictionary
+      if ( !!haveFileNames ) {
+        namesObject = fileNames[folder]
+        tmp = namesObject[i.toString()]
+        console.log(tmp)
+        document.getElementById("videoTitle").innerHTML = tmp
+
+        /*
+        if ( a.includes(".")==true ) {
+        tmp = a.split(".")
+        tmp.pop()
+        tmp2 = tmp.join(".")
+        tmp2 = tmp2.replace("%20", " ").replace(/^\s+|\s+$/g, '')
+        }
+        */
+      }
+    }
+
+
+    // Change original video source on input button
+    function changOG() {
+      startVid = document.getElementById("1z").value
+      videoList[0].src = startVid
+      // Reset iterator to be redefined bc new directory
+      iter = null;
+      displayStats();
+    }
+
+
+    $('video').on("error", function() {
+      videoHistory.pop();
+      x = (videoHistory[videoHistory.length-1].split("/"))
+      z = x[x.length-1]
+      alert("FINISHED PLAYLIST\n\nNAME OF LAST VIDEO:\n" + z + "\n\nstarting over. . . ");
+      startVid = videoHistory[0];
+      videoHistory = [];
+      iter=1;
+      nextVid();
+    });
+
+
+    function getIterPos(a) {
+      // Get position of the iterator in the file name
+      var index = 0;
+      // If iterator is inbetween parentheses
+      if ( a.includes("(") && a.includes(")") ) {
+        i = 0;
+        while ( a.substring(i,i+1) != "(" ) {
+          i++
+          if ( i == 1200 ) { break }
+        }
+        index = i + 1
+      }
+      // If iterator not in parentheses
+      else {
+        i = 0;
+        while ( !parseInt(a.substring(i,i+1)) ) {
+          i++
+          // Can't find an integer
+          if ( i == 1200 ) {
+            break }
+        }
+        index = i + 1
+        if ( i == 1200 ) { index = 0 } // default value
+      }
+    return index
+    }
+
+
+    function getCurrentIter(a, index) {
+      // If new session and iterator not defined
+      if ( !iter ) {
+        // If the iterator character is not after the parentheses (returns NaN)
+        if ( !parseInt(a.substring(index,index+1)) ) {
+          // Loop through string until the character is a number
+          i = 0
+          while ( !parseInt(a.substring(i,i+1)) ) {
+            i++;
+            if ( i == 1200 ) {
+            break }
+            }
+          iter = parseInt(a.substring(i,i+1))
+            // Error alert
+            if ( i == 1200 ) {
+              iter = -1;
+              alert("Cannot parse any running iterator/index from video title.\n" + "video title: " + a + "\nLooking for a file name that follows format _ (iterator).filecode\nFor Example:\n'name (3).mp4'\n followed by another video in the folder\n 'name (4).mp4");
+            }}
+            else { iter = parseInt(a.substring(index,index+1)) }
+          }
+      return iter
+      }
+
+    function nextVid() {
+      // Format current video source string
+      z = startVid.split("/")
+      // Get file name from source string
+      a = z[z.length - 1]
+      index = getIterPos(a)
+      iter = getCurrentIter(a, index)
+      iter++
+      next = (a.substr(0, index) + iter.toString() + a.substr((index + (iterHistory[iterHistory.length - 1]).toString().length)));
+      z.pop()
+      newV = z.join("/") + "/" + next
+      videoList[0].src = newV
+      startVid = newV;
+      videoHistory.push(startVid);
+      displayStats();
+      iterHistory.push(iter)
+    }
+
+
+    function skipTo() {
+      num = document.getElementById("1a").value
+      if ( !parseInt(num) ) {
+        altert("Enter a Number Please")
+        return null
+      }
+      iter = parseInt(num)
+      z = startVid.split("/")
+      a = z[z.length - 1]
+      index = getIterPos(a)
+      next = (a.substr(0, index) + iter.toString() + a.substr((index + (iterHistory[iterHistory.length - 1]).toString().length)));
+      z.pop()
+      newV = z.join("/") + "/" + next
+      videoList[0].src = newV
+      startVid = newV;
+      videoHistory.push(startVid);
+      displayStats();
+      iterHistory.push(iter)
+    }
+
+
+// GLOBAL HOTKEYS
+$(document).keydown(function (e) {
+  // n = next vid
+  if (e.which == 78 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          nextVid();
+        }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        nextVid();
+      }; } }
+
+  // arrow keys up/down = volume controls
+  if (e.which == 38 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if ( i.volume != 1 ) { i.volume = i.volume+.1 }
+      }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        if ( videoList[selectedVid].volume != 1 ) {
+          videoList[selectedVid].volume = videoList[selectedVid].volume+.1 }
+      }; } }
+  if (e.which == 40 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if ( i.volume != 0 ) { i.volume = i.volume-.1 }
+      }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        if ( videoList[selectedVid].volume != 0 ) {
+          videoList[selectedVid].volume = videoList[selectedVid].volume-.1 }
+      }; } }
+
+  // > < = playbackRate controls
+  if (e.which == 190 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if ( i.playbackRate != 3 ) { i.playbackRate = i.playbackRate+.1 }
+      }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        if ( videoList[selectedVid].playbackRate != 3 ) {
+          videoList[selectedVid].playbackRate = videoList[selectedVid].playbackRate+.1 }
+      }; } }
+  if (e.which == 188 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if ( i.playbackRate != 0 ) { i.playbackRate = i.playbackRate-.1 }
+      }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        if ( videoList[selectedVid].playbackRate != 0 ) {
+          videoList[selectedVid].playbackRate = videoList[selectedVid].playbackRate-.1 }
+      }; } }
+
+  // p = play/pause
+  if (e.which == 80 ) {
+    if ( toggle == "off" ) {
+      for (const i of videoList) {
+        if ( i.style.display != "none" ) {
+          if (i.paused == true) { i.play(); }
+          else { i.pause(); }
+        }; }; }
+    if ( toggle == "on" ) {
+      if ( videoList[selectedVid].style.display != "none" ) {
+        if (videoList[selectedVid].paused == true) { videoList[selectedVid].play(); }
+        else { videoList[selectedVid].pause(); }
+      }; } }
+
+
+    if (e.which == 37 ) {
+      if ( toggle == "off" ) {
+        for (const i of videoList) {
+          if ( i.style.display != "none" ) {
+            let currTime = i.currentTime;
+            i.currentTime = currTime-5
+        }; }; }
+      if ( toggle == "on" ) {
+        if ( videoList[selectedVid].style.display != "none" ) {
+          currTime = videoList[selectedVid].currentTime;
+          videoList[selectedVid].currentTime = currTime-5
+        }}}
+
+        if (e.which == 39 ) {
+      if ( toggle == "off" ) {
+        for (const i of videoList) {
+          if ( i.style.display != "none" ) {
+            let currTime = i.currentTime;
+            i.currentTime = currTime+5
+        }; }; }
+      if ( toggle == "on" ) {
+        if ( videoList[selectedVid].style.display != "none" ) {
+          currTime = videoList[selectedVid].currentTime;
+          videoList[selectedVid].currentTime = currTime+5
+        }}}
+})
+
+  </script>
+  </body>
