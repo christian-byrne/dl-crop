@@ -1,14 +1,42 @@
+
+<a name="table-of-contents"/>
+
 # dl-crop
 
-###### ytdl wrapper for automated trim/crop post-processing
+<a name="demo"/>
+
+###### ytdl wrapper for batch downloading -> trim/crop post-processing
+
+
 
 ![demo gui](demo/dl-crop-gui.png)
 
-##### Search media w/ selenium browser OR use a URL list. Specify start and and times for cropping.
 
 ![demo gif](demo/dlcrop-demo.gif)
 
---------
+
+###### Flask webapp run with heroku
+
+
+###### Search media w/ selenium browser OR use a URL list. Specify start and end times for cropping in GUI or in txt file
+
+
+
+-------------------------------
+
+
+## Status: [Not Live](https://www.bymyself.life/dl-crop)
+
+
+-------------------------------
+
+ <div align="center" style="text-align: center; font-family: monospace; allign: center">
+    Made with <g-emoji class="g-emoji" alias="heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png">
+  <img class="emoji" alt="heart" height="20" width="20" src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png"></g-emoji> <a href="https://www.bymyself.life">bymyself</a>
+  </div>
+  
+<div align="center" style="font-size: 11px; margin: 0; opacity:.6"><a href="#table-of-contents">Top (目次)</a></div> 
+
 
 ### GUI TODO
 
@@ -57,4 +85,12 @@
 - handle the WARNING: Requested formats are incompatible for merge and will be merged into mkv. errror -> change name
 
 
-###### bymyself
+----------------------------
+
+
+  <div align="center" style="text-align: center; font-family: monospace; allign: center">
+    Made with <g-emoji class="g-emoji" alias="heart" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png">
+  <img class="emoji" alt="heart" height="20" width="20" src="https://github.githubassets.com/images/icons/emoji/unicode/2764.png"></g-emoji> <a href="https://www.bymyself.life">bymyself</a>
+  </div>
+  
+<div align="center" style="font-size: 11px; margin: 0; opacity:.6"><a href="#table-of-contents">Top (目次)</a></div> 
