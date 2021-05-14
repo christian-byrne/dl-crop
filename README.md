@@ -11,6 +11,7 @@
 
 ![demo gui](demo/dl-crop-gui.png)
 
+###### Demo
 
 ![demo gif](demo/dlcrop-demo.gif)
 
