@@ -42,6 +42,8 @@
 ### GUI TODO
 
 - FIX: logging of random log files with timecode filenames
+- playlist player template
+  - dynamically load playlist items w/ jinja loop
 - display in table:
   - thumbnail
     - parser or atomicparsley
